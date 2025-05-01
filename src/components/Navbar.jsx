@@ -3,7 +3,7 @@ import { useState } from "react";
 import Login from "./Login";
 import Logout from "./Logout";
 import { useAuth } from "../context/AuthProvider";
-
+import '../components/navbar.css';
 function Navbar() {
   const [authUser, setAuthUser] = useAuth();
   const [theme, setTheme] = useState(
@@ -49,10 +49,11 @@ function Navbar() {
   return (
     <>
       <div
-        className={` max-w-screen-2xl container mx-auto md:px-20 px-4 dark:bg-white dark:text-black fixed top-0 left-0 right-0 z-50 ${sticky
-            ? "sticky-navbar shadow-md bg-base-200 dark:bg-white dark:text-white duration-300 transition-all ease-in-out "
+        className={` max-w-screen-2xl container mx-auto md:px-20 px-4 dark:bg-slate-800 dark:text-white fixed top-0 left-0 right-0 z-50 ${
+          sticky
+            ? "sticky-navbar shadow-md bg-base-200 dark:bg-slate-700 dark:text-white duration-300 transition-all ease-in-out"
             : ""
-          }`}
+        }`}
       >
         <div className="navbar ">
           <div className="navbar-start">
@@ -79,11 +80,10 @@ function Navbar() {
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 dark:bg-slate-800 rounded-box w-52"
+                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
               >
                 {navItems}
               </ul>
-
             </div>
             <a className=" text-2xl font-bold cursor-pointer">bookBazzar</a>
           </div>
@@ -95,7 +95,7 @@ function Navbar() {
               <label className=" px-3 py-2 border rounded-md flex items-center gap-2">
                 <input
                   type="text"
-                  className="grow outline-none rounded-md px-1 "
+                  className="grow outline-none rounded-md px-1 dark:bg-slate-900 dark:text-white"
                   placeholder="Search"
                 />
                 <svg
