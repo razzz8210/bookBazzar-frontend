@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import Cards from "./Cards";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 function Course() {
   const [book, setBook] = useState([]);
   useEffect(() => {
