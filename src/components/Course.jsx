@@ -19,7 +19,7 @@ function Course() {
   return (
     <>
       <div className=" max-w-screen-2xl container mx-auto md:px-20 px-4">
-        <div className="mt-16 items-center justify-center text-center">
+        <div className="mt-26 items-center justify-center text-center">
           <div>
             
           </div>
