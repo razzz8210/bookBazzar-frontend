@@ -16,7 +16,7 @@ function Login() {
       password: data.password,
     };
     await axios
-      .post("https://book-bazzar-backend-j2rq-mb1mlpcec.vercel.app/user/login", userInfo)
+      .post("https://book-bazzar-backend-j2rq.vercel.app/user/login", userInfo)
       .then((res) => {
         console.log(res.data);
         if (res.data) {
