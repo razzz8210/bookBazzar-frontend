@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Login from "./Login";
 import Logout from "./Logout";
 import { useAuth } from "../context/AuthProvider";
+import { useCart } from "../context/CartProvider";
 import '../components/navbar.css';
 function Navbar() {
   const [authUser, setAuthUser] = useAuth();
+  const { getTotalItems } = useCart();
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
   );
@@ -39,11 +42,16 @@ function Navbar() {
   const navItems = (
     <>
       <li>
-        <a href="/">Home</a>
+        <Link to="/">Home</Link>
       </li>
       <li>
-        <a href="/course">Course</a>
+        <Link to="/course">Course</Link>
       </li>
+      {authUser && (
+        <li>
+          <Link to="/cart">Cart</Link>
+        </li>
+      )}
     </>
   );
   return (
@@ -85,9 +93,9 @@ function Navbar() {
                 {navItems}
               </ul>
             </div>
-            <a className=" text-2xl font-bold cursor-pointer">bookBazzar</a>
+            <Link to="/" className="text-lg md:text-2xl font-bold cursor-pointer">bookBazzar</Link>
           </div>
-          <div className="navbar-end space-x-3">
+          <div className="navbar-end space-x-1 md:space-x-3">
             <div className="navbar-center hidden lg:flex">
               <ul className="menu menu-horizontal px-1">{navItems}</ul>
             </div>
@@ -122,7 +130,7 @@ function Navbar() {
 
               {/* sun icon */}
               <svg
-                className="swap-off fill-current w-7 h-7"
+                className="swap-off fill-current w-7 h-7 md:w-8 md:h-8"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -132,7 +140,7 @@ function Navbar() {
 
               {/* moon icon */}
               <svg
-                className="swap-on fill-current w-7 h-7"
+                className="swap-on fill-current w-6 h-6 md:w-7 md:h-7"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
@@ -142,11 +150,35 @@ function Navbar() {
             </label>
 
             {authUser ? (
-              <Logout />
+              <div className="flex items-center space-x-3 md:space-x-4">
+                {/* Cart Icon */}
+                <Link to="/cart" className="relative">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 md:h-7 md:w-7 cursor-pointer hover:text-pink-500 duration-200"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 7a2 2 0 01-2 2H8a2 2 0 01-2-2L5 9z"
+                    />
+                  </svg>
+                  {getTotalItems() > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full h-5 w-5 md:h-6 md:w-6 flex items-center justify-center">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </Link>
+                <Logout />
+              </div>
             ) : (
               <div className="">
                 <a
-                  className="bg-black text-white px-3 py-2 rounded-md hover:bg-slate-800 duration-300 cursor-pointer"
+                  className="bg-black text-white px-2 py-1 md:px-3 md:py-2 rounded-md hover:bg-slate-800 duration-300 cursor-pointer text-sm md:text-base"
                   onClick={() =>
                     document.getElementById("my_modal_3").showModal()
                   }

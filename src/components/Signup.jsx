@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Login from "./Login";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthProvider";
+
 function Signup() {
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
+  const [authUser, setAuthUser] = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -15,34 +18,56 @@ function Signup() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    if (isLoading) return; // Prevent multiple submissions
+    
     const userInfo = {
       fullname: data.fullname,
       email: data.email,
       password: data.password,
     };
-    await axios
-      .post("https://book-bazzar-backend-j2rq.vercel.app/user/signup", userInfo)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          toast.success("Signup Successfully");
+    
+    setIsLoading(true);
+    console.log("Submitting signup data:", userInfo);
+    
+    try {
+      const res = await axios.post("http://localhost:4001/user/signup", userInfo);
+      console.log("Signup response:", res.data);
+      
+      if (res.data && res.data.user) {
+        console.log("User data received:", res.data.user);
+        toast.success("Signup Successfully");
+        
+        // Update authentication context (AuthProvider will handle localStorage)
+        setAuthUser(res.data.user);
+        console.log("AuthUser state updated with:", res.data.user);
+        
+        // Navigate after authentication state is updated
+        setTimeout(() => {
+          console.log("Navigating to:", from);
           navigate(from, { replace: true });
-        }
-        localStorage.setItem("Users", JSON.stringify(res.data.user));
-      })
-      .catch((err) => {
-        if (err.response) {
-          console.log(err);
-          toast.error("Error: " + err.response.data.message);
-        }
-      });
+        }, 1000);
+      } else {
+        console.error("No user data in response:", res.data);
+        toast.error("Signup failed - no user data received");
+      }
+    } catch (err) {
+      if (err.response) {
+        console.log("Signup error:", err);
+        toast.error("Error: " + err.response.data.message);
+      } else {
+        console.log("Network error:", err);
+        toast.error("Network error - please check your connection");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <>
       <div className="flex h-screen items-center justify-center">
         <div className=" w-[600px] ">
           <div className="modal-box">
-            <form onSubmit={handleSubmit(onSubmit)} method="dialog">
+            <form onSubmit={handleSubmit(onSubmit)}>
               {/* if there is a button in form, it will close the modal */}
               <Link
                 to="/"
@@ -90,7 +115,7 @@ function Signup() {
                 <span>Password</span>
                 <br />
                 <input
-                  type="text"
+                  type="password"
                   placeholder="Enter your password"
                   className="w-80 px-3 py-1 border rounded-md outline-none"
                   {...register("password", { required: true })}
@@ -104,20 +129,25 @@ function Signup() {
               </div>
               {/* Button */}
               <div className="flex justify-around mt-4">
-                <button className="bg-pink-500 text-white rounded-md px-3 py-1 hover:bg-pink-700 duration-200">
-                  Signup
+                <button 
+                  type="submit"
+                  disabled={isLoading}
+                  className={`rounded-md px-3 py-1 duration-200 ${
+                    isLoading 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-pink-500 hover:bg-pink-700 cursor-pointer'
+                  } text-white`}
+                >
+                  {isLoading ? "Signing up..." : "Signup"}
                 </button>
                 <p className="text-xl">
-                  Have account?{" "}
-                  <button
+                  Go Back?{" "}
+                  <Link
+                    to="/"
                     className="underline text-blue-500 cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("my_modal_3").showModal()
-                    }
                   >
-                    Login
-                  </button>{" "}
-                  <Login />
+                    GoBack
+                  </Link>
                 </p>
               </div>
             </form>

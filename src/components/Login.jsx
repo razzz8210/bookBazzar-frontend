@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthProvider";
+
 function Login() {
+  const [authUser, setAuthUser] = useAuth();
   const {
     register,
     handleSubmit,
@@ -15,26 +18,26 @@ function Login() {
       email: data.email,
       password: data.password,
     };
-    await axios
-      .post("https://book-bazzar-backend-j2rq.vercel.app/user/login", userInfo)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          toast.success("Loggedin Successfully");
-          document.getElementById("my_modal_3").close();
-          setTimeout(() => {
-            window.location.reload();
-            localStorage.setItem("Users", JSON.stringify(res.data.user));
-          }, 1000);
-        }
-      })
-      .catch((err) => {
-        if (err.response) {
-          console.log(err);
-          toast.error("Error: " + err.response.data.message);
-          setTimeout(() => {}, 2000);
-        }
-      });
+    
+    try {
+      const res = await axios.post("http://localhost:4001/user/login", userInfo);
+      console.log("Login response:", res.data);
+      
+      if (res.data && res.data.user) {
+        toast.success("Loggedin Successfully");
+        
+        // Update authentication context (AuthProvider will handle localStorage)
+        setAuthUser(res.data.user);
+        
+        // Close modal
+        document.getElementById("my_modal_3").close();
+      }
+    } catch (err) {
+      if (err.response) {
+        console.log("Login error:", err);
+        toast.error("Error: " + err.response.data.message);
+      }
+    }
   };
   return (
     <div>

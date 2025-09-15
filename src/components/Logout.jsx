@@ -6,11 +6,8 @@ function Logout() {
   const [authUser, setAuthUser] = useAuth();
   const handleLogout = () => {
     try {
-      setAuthUser({
-        ...authUser,
-        user: null,
-      });
-      localStorage.removeItem("Users");
+      // Clear authentication state (AuthProvider will handle localStorage)
+      setAuthUser(null);
       toast.success("Logout successfully");
 
       setTimeout(() => {

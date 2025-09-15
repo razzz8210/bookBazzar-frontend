@@ -12,13 +12,74 @@ function Freebook() {
   useEffect(() => {
     const getBook = async () => {
       try {
-        const res = await axios.get("https://book-bazzar-backend-j2rq.vercel.app/book");
-
-        const data = await res.data.filter((data) => data.category === "free");
-        console.log(data);
-        setBook(data);
+        const res = await axios.get("http://localhost:4001/book");
+        console.log("API Response:", res.data);
+        
+        if (res.data && res.data.length > 0) {
+          const data = res.data.filter((data) => data.category === "free");
+          console.log("Filtered free books:", data);
+          setBook(data);
+        } else {
+          console.log("No data received from API, using fallback data");
+          // Fallback data if API fails
+          const fallbackData = [
+            {
+              id: 1,
+              name: "Fiction",
+              title: "A mysterious journey unfolds, revealing secrets, magic, betrayal, and destiny.",
+              price: 0,
+              category: "free",
+              image: "https://img.freepik.com/free-photo/book-library-with-open-textbook_1150-5918.jpg?t=st=1743431298~exp=1743434898~hmac=d1bf5b3b27682515b7d0c63843ce4949df58de8509535a0c354b81fe19740e20&w=1380"
+            },
+            {
+              id: 4,
+              name: "Magic Book",
+              title: "A mysterious journey unfolds, revealing secrets, magic, betrayal, and destiny.",
+              price: 0,
+              category: "free",
+              image: "https://img.freepik.com/free-photo/book-library-with-open-textbook_1150-5918.jpg?t=st=1743431298~exp=1743434898~hmac=d1bf5b3b27682515b7d0c63843ce4949df58de8509535a0c354b81fe19740e20&w=1380"
+            },
+            {
+              id: 7,
+              name: "Medical",
+              title: "An educational journey of healing, knowledge, science, and medical discovery.",
+              price: 0,
+              category: "free",
+              image: "https://img.freepik.com/free-photo/book-library-with-open-textbook_1150-5918.jpg?t=st=1743431298~exp=1743434898~hmac=d1bf5b3b27682515b7d0c63843ce4949df58de8509535a0c354b81fe19740e20&w=1380"
+            }
+          ];
+          setBook(fallbackData);
+        }
       } catch (error) {
-        console.log(error);
+        console.log("API Error:", error);
+        // Use fallback data on error
+        const fallbackData = [
+          {
+            id: 1,
+            name: "Fiction",
+            title: "A mysterious journey unfolds, revealing secrets, magic, betrayal, and destiny.",
+            price: 0,
+            category: "free",
+            image: "https://img.freepik.com/free-photo/book-library-with-open-textbook_1150-5918.jpg?t=st=1743431298~exp=1743434898~hmac=d1bf5b3b27682515b7d0c63843ce4949df58de8509535a0c354b81fe19740e20&w=1380"
+          },
+          {
+            id: 4,
+            name: "Magic Book",
+            title: "A mysterious journey unfolds, revealing secrets, magic, betrayal, and destiny.",
+            price: 0,
+            category: "free",
+            image: "https://img.freepik.com/free-photo/book-library-with-open-textbook_1150-5918.jpg?t=st=1743431298~exp=1743434898~hmac=d1bf5b3b27682515b7d0c63843ce4949df58de8509535a0c354b81fe19740e20&w=1380"
+          },
+          {
+            id: 7,
+            name: "Medical",
+            title: "An educational journey of healing, knowledge, science, and medical discovery.",
+            price: 0,
+            category: "free",
+            image: "https://img.freepik.com/free-photo/book-library-with-open-textbook_1150-5918.jpg?t=st=1743431298~exp=1743434898~hmac=d1bf5b3b27682515b7d0c63843ce4949df58de8509535a0c354b81fe19740e20&w=1380"
+          }
+        ];
+        setBook(fallbackData);
       }
     };
     getBook();
@@ -29,15 +90,16 @@ function Freebook() {
     infinite: false,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToScroll: 1,
     initialSlide: 0,
+    adaptiveHeight: true,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
+          slidesToScroll: 1,
+          infinite: false,
           dots: true,
         },
       },
@@ -45,8 +107,8 @@ function Freebook() {
         breakpoint: 600,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
+          slidesToScroll: 1,
+          initialSlide: 0,
         },
       },
       {
@@ -69,11 +131,17 @@ function Freebook() {
         </div>
 
         <div>
-          <Slider {...settings}>
-            {book.map((item) => (
-              <Cards item={item} key={item.id} />
-            ))}
-          </Slider>
+          {book.length > 0 ? (
+            <Slider {...settings}>
+              {book.map((item) => (
+                <Cards item={item} key={item.id} />
+              ))}
+            </Slider>
+          ) : (
+            <div className="text-center py-8">
+              <p>Loading books...</p>
+            </div>
+          )}
         </div>
       </div>
     </>
