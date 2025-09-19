@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
 import axios from "axios";
+import API_BASE_URL from "../utils/apiConfig";
 
 import Cards from "./Cards";
 function Freebook() {
@@ -12,7 +13,7 @@ function Freebook() {
   useEffect(() => {
     const getBook = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/book`);
+        const res = await axios.get(`${API_BASE_URL}/book`);
         console.log("API Response:", res.data);
         
         if (res.data && res.data.length > 0) {

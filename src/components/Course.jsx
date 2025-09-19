@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import Cards from "./Cards";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import API_BASE_URL from "../utils/apiConfig";
 function Course() {
   const [book, setBook] = useState([]);
   useEffect(() => {
     const getBook = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/book`);
+        const res = await axios.get(`${API_BASE_URL}/book`);
         console.log(res.data);
         setBook(res.data);
       } catch (error) {

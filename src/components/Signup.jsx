@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthProvider";
+import API_BASE_URL from "../utils/apiConfig";
 
 function Signup() {
   const location = useLocation();
@@ -30,7 +31,7 @@ function Signup() {
     console.log("Submitting signup data:", userInfo);
     
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/user/signup`, userInfo);
+      const res = await axios.post(`${API_BASE_URL}/user/signup`, userInfo);
       console.log("Signup response:", res.data);
       
       if (res.data && res.data.user) {
